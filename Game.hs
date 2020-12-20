@@ -12,6 +12,7 @@ data Player = PlayerX | PlayerO deriving (Eq, Show)
 data Cell = Empty | Full Player deriving (Eq, Show)
 
 type Board = Array (Int,Int) Cell
+
 n :: Int    -- number of cells
 n = 9
 
