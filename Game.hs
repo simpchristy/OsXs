@@ -13,8 +13,8 @@ data Cell = Empty | Full Player deriving (Eq, Show)
 
 type Board = Array (Int,Int) Cell
 
-n :: Int    -- number of cells
-n = 9
+n :: Int    -- size of grid
+n = 3
 
 initialWorld :: Game
 initialWorld = Game { gameState = Running 
@@ -25,7 +25,7 @@ initialWorld = Game { gameState = Running
 initialBoard :: Board
 initialBoard = array boardRange [(,) r Empty | r <- range boardRange]
     where
-        boardRange = ((0,0),(2,2))
+        boardRange = ((0,0),(n-1,n-1))
 
 
 
