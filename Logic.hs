@@ -21,9 +21,9 @@ mouseClick (x,y) game
         = let cellClick = mousePosAsCell (x,y)
               curPlayer = gamePlayer game
               curBoard = gameBoard game
-          in  if True --(curBoard ! cellClick) == Empty
+          in  if (curBoard ! cellClick) == Empty
                 then game { gamePlayer = changePlayer curPlayer
-                     , gameBoard  = curBoard // [( cellClick, Full curPlayer)] }
+                          , gameBoard  = curBoard // [( cellClick, Full curPlayer)] }
                 else game
     |  otherwise = game
 
