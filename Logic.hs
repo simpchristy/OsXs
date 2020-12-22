@@ -11,17 +11,17 @@ changePlayer player = case player of
     PlayerO -> PlayerX
 
 mousePosAsCell :: (Float,Float) -> (Int,Int)
-mousePosAsCell (x,y) = ( 1 + round (fromIntegral(n-1)*x/boardWidth)
-                       , 1 + round (fromIntegral(n-1)*y/boardHeight) )
+mousePosAsCell (x,y) = ( floor (fromIntegral(n)*(0.5 + x/boardWidth))
+                       , floor (fromIntegral(n)*(0.5 + y/boardHeight)) )
 
 mouseClick :: (Float,Float) -> Game -> Game
 mouseClick (x,y) game
-    |  (x >= fst boardXcoords && x <= snd boardXcoords)
-    && (y >= fst boardYcoords && y <= snd boardYcoords)
+    |  (x >= fst boardXcoords && x < snd boardXcoords)
+    && (y >= fst boardYcoords && y < snd boardYcoords)
         = let cellClick = mousePosAsCell (x,y)
               curPlayer = gamePlayer game
               curBoard = gameBoard game
-          in  if (curBoard ! cellClick) == Empty
+          in  if True --(curBoard ! cellClick) == Empty
                 then game { gamePlayer = changePlayer curPlayer
                      , gameBoard  = curBoard // [( cellClick, Full curPlayer)] }
                 else game
