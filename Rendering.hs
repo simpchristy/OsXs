@@ -1,15 +1,17 @@
 module Rendering where
 
 import Graphics.Gloss
+import Data.Array
 import Game
 
-data Symbol = X | O
 
 screenHeight = 480 :: Float
 screenWidth = 640 :: Float
 boardScale = 0.95
 boardHeight = boardScale*screenHeight
 boardWidth = boardScale*screenWidth
+boardXcoords = (  0.5*(screenWidth-boardWidth)  ,  0.5*(screenWidth+boardWidth)  )
+boardYcoords = ( 0.5*(screenHeight-boardHeight) , 0.5*(screenHeight+boardHeight) )
 cellHeight = boardHeight/3
 cellWidth = boardWidth/3
 
@@ -23,23 +25,32 @@ gameOverColour (Just PlayerX) = xcolour
 gameOverColour (Just PlayerO) = ocolour
 gameOverColour Nothing  = tiecolour
 
-shape :: Symbol -> Picture
-shape X = 
-        let width = 10
-            length = 120
-            rec1 = rotate (-45) $ rectangleSolid width length
-            rec2 = rotate 90 rec1
-        in  pictures [rec1, rec2]
-shape O =
-        let thickness = 10
-            radius = 50
-        in  thickCircle radius thickness
+shape :: Player -> Picture
+shape PlayerX = 
+    let width = 10
+        length = 120
+        rec1 = rotate (-45) $ rectangleSolid width length
+        rec2 = rotate 90 rec1
+    in  pictures [rec1, rec2]
+shape PlayerO =
+    let thickness = 10
+        radius = 50
+    in  thickCircle radius thickness
+
+boardPlayer :: Board -> Player -> Picture
+boardPlayer board player =
+    let board' = assocs board
+        boardP = filter (\(_,cell) -> cell == (Full player)) board'
+    in  pictures
+        $ map (\ ((x,y) ,_)
+        -> (translate ((fromIntegral x)*cellWidth) ((fromIntegral y)*cellHeight)
+        $ shape player)) boardP
 
 xPictures :: Board -> Picture
-xPictures board = shape X
+xPictures board = boardPlayer board PlayerX
 
 oPictures :: Board -> Picture
-oPictures board = shape O
+oPictures board = boardPlayer board PlayerO
 
 gridPicture :: Picture
 gridPicture = 

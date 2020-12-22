@@ -5,7 +5,7 @@ import Rendering
 import Logic
 import Graphics.Gloss
 
-window = InWindow "Os & Xs" (640,480) (100,100)
+window = InWindow "Os & Xs" (640,480) (0,0)
 bgColour = makeColor 0 0 0 255
 freq = 30
 
