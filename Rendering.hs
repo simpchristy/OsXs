@@ -10,8 +10,8 @@ screenWidth = 640 :: Float
 boardScale = 0.95
 boardHeight = boardScale*screenHeight
 boardWidth = boardScale*screenWidth
-boardXcoords = (  0.5*(screenWidth-boardWidth)  ,  0.5*(screenWidth+boardWidth)  )
-boardYcoords = ( 0.5*(screenHeight-boardHeight) , 0.5*(screenHeight+boardHeight) )
+boardXcoords = ( 0.5*(-boardWidth)  , 0.5*(boardWidth)  )
+boardYcoords = ( 0.5*(-boardHeight) , 0.5*(boardHeight) )
 cellHeight = boardHeight/3
 cellWidth = boardWidth/3
 
@@ -37,13 +37,25 @@ shape PlayerO =
         radius = 50
     in  thickCircle radius thickness
 
+arr2XCoords :: Int -> Float
+arr2XCoords cellno
+  | cellno == 0 = -cellWidth
+  | cellno == 1 = 0
+  | cellno == 2 = cellWidth
+
+arr2YCoords :: Int -> Float
+arr2YCoords cellno
+  | cellno == 0 = -cellHeight
+  | cellno == 1 = 0
+  | cellno == 2 = cellHeight
+
 boardPlayer :: Board -> Player -> Picture
 boardPlayer board player =
     let board' = assocs board
         boardP = filter (\(_,cell) -> cell == (Full player)) board'
     in  pictures
         $ map (\ ((x,y) ,_)
-        -> (translate ((fromIntegral x)*cellWidth) ((fromIntegral y)*cellHeight)
+        -> (translate (arr2XCoords x) (arr2YCoords y) 
         $ shape player)) boardP
 
 xPictures :: Board -> Picture

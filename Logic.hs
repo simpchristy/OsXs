@@ -10,26 +10,28 @@ changePlayer player = case player of
     PlayerX -> PlayerO
     PlayerO -> PlayerX
 
-mousePosAsCoord :: (Float,Float) -> (Int,Int)
-mousePosAsCoord (x,y) = ( round (fromIntegral(n-1)*x/boardWidth)
-                        , round (fromIntegral(n-1)*y/boardHeight) )
+mousePosAsCell :: (Float,Float) -> (Int,Int)
+mousePosAsCell (x,y) = ( 1 + round (fromIntegral(n-1)*x/boardWidth)
+                       , 1 + round (fromIntegral(n-1)*y/boardHeight) )
 
 mouseClick :: (Float,Float) -> Game -> Game
 mouseClick (x,y) game
---    |  (x >= fst boardXcoords && x <= snd boardXcoords)
---    && (y >= fst boardYcoords && y <= snd boardYcoords)
-    |  x < 0
-        = let cellClick = (0,1) --mousePosAsCoord (x,y)
+    |  (x >= fst boardXcoords && x <= snd boardXcoords)
+    && (y >= fst boardYcoords && y <= snd boardYcoords)
+        = let cellClick = mousePosAsCell (x,y)
               curPlayer = gamePlayer game
               curBoard = gameBoard game
-          in  game { gamePlayer = changePlayer curPlayer
-                   , gameBoard  = curBoard // [( cellClick, Full curPlayer)] }
+          in  if (curBoard ! cellClick) == Empty
+                then game { gamePlayer = changePlayer curPlayer
+                     , gameBoard  = curBoard // [( cellClick, Full curPlayer)] }
+                else game
     |  otherwise = game
+
 
 eventUpdate :: Event -> Game -> Game
 eventUpdate (EventKey (MouseButton LeftButton) Up _ mousePos) game =
     case gameState game of
-        Running -> do mouseClick mousePos game
+        Running -> mouseClick mousePos game
         GameOver (Just player) -> game
         GameOver (Nothing) -> game
 eventUpdate _ game = game
