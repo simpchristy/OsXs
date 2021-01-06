@@ -10,8 +10,8 @@ screenWidth = 640 :: Float
 boardScale = 0.95
 boardHeight = boardScale*screenHeight
 boardWidth = boardScale*screenWidth
-boardXcoords = ( 0.5*(-boardWidth)  , 0.5*(boardWidth)  )
-boardYcoords = ( 0.5*(-boardHeight) , 0.5*(boardHeight) )
+boardXcoords = ( -0.5*boardWidth  , 0.5*boardWidth  )
+boardYcoords = ( -0.5*boardHeight , 0.5*boardHeight )
 cellHeight = boardHeight/3
 cellWidth = boardWidth/3
 

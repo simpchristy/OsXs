@@ -27,11 +27,37 @@ mouseClick (x,y) game
                 else game
     |  otherwise = game
 
+cells2num :: Cell -> Int
+cells2num cell
+  | cell == Empty = 0
+  | cell == Full PlayerX =  1
+  | cell == Full PlayerO = -1
+
+allDirections :: [[(Int,Int)]]
+allDirections = concat [hor, ver, dia]
+    where hor = [ [(x,y) | x <- [0..n-1]] | y <- [0..n-1] ]
+          ver = [ [(x,y) | y <- [0..n-1]] | x <- [0..n-1] ]
+          dia = [ [(i,i) | i <- [0..n-1]], [(j,(n-1)-j) | j <- [0..n-1]] ]
+
+checkWinner :: Game -> Game
+checkWinner game =
+    let board = gameBoard game
+        boardP = map (sum . map (cells2num . (!) board)) allDirections
+    in  if   any (\x -> x == 3 || x == -3) boardP
+        then game { gameState = GameOver (Just $ changePlayer $ gamePlayer game) }
+        else if   all (\x -> x == 1 || x == -1) boardP
+             then game { gameState = GameOver Nothing }
+             else game
+
 
 eventUpdate :: Event -> Game -> Game
 eventUpdate (EventKey (MouseButton LeftButton) Up _ mousePos) game =
     case gameState game of
-        Running -> mouseClick mousePos game
-        GameOver (Just player) -> game
-        GameOver (Nothing) -> game
+        Running -> let game' = mouseClick mousePos game
+                   in  checkWinner game'
+        GameOver _ -> initialWorld
 eventUpdate _ game = game
+
+
+
+
