@@ -42,10 +42,11 @@ allDirections = concat [hor, ver, dia]
 checkWinner :: Game -> Game
 checkWinner game =
     let board = gameBoard game
-        boardP = map (sum . map (cells2num . (!) board)) allDirections
-    in  if   any (\x -> x == 3 || x == -3) boardP
+        boardP = map (map (cells2num . (!) board)) allDirections
+        boardP'= map sum boardP
+    in  if   any (\x -> x == 3 || x == -3) boardP'
         then game { gameState = GameOver (Just $ changePlayer $ gamePlayer game) }
-        else if   all (\x -> x == 1 || x == -1) boardP
+        else if   all (\x -> x /= 0) $concat boardP
              then game { gameState = GameOver Nothing }
              else game
 
