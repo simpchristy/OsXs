@@ -52,7 +52,7 @@ arr2YCoords cellno
 boardPlayer :: Board -> Player -> Picture
 boardPlayer board player =
     let board' = assocs board
-        boardP = filter (\(_,cell) -> cell == (Full player)) board'
+        boardP = filter (\(_,cell) -> cell == (Just player)) board'
     in  pictures
         $ map (\ ((x,y) ,_)
         -> (translate (arr2XCoords x) (arr2YCoords y) 

@@ -9,8 +9,7 @@ data Game = Game { gameState :: State
 
 data State = Running | GameOver (Maybe Player) deriving (Eq, Show)
 data Player = PlayerX | PlayerO deriving (Eq, Show)
-data Cell = Empty | Full Player deriving (Eq, Show)
-
+type Cell = Maybe Player
 type Board = Array (Int,Int) Cell
 
 n :: Int    -- size of grid
@@ -23,7 +22,7 @@ initialWorld = Game { gameState = Running
                     }
 
 initialBoard :: Board
-initialBoard = array boardRange [(,) r Empty | r <- range boardRange]
+initialBoard = array boardRange [(,) r Nothing | r <- range boardRange]
     where
         boardRange = ((0,0),(n-1,n-1))
 

@@ -21,32 +21,32 @@ mouseClick (x,y) game
         = let cellClick = mousePosAsCell (x,y)
               curPlayer = gamePlayer game
               curBoard = gameBoard game
-          in  if (curBoard ! cellClick) == Empty
+          in  if (curBoard ! cellClick) == Nothing
                 then game { gamePlayer = changePlayer curPlayer
-                          , gameBoard  = curBoard // [( cellClick, Full curPlayer)] }
+                          , gameBoard  = curBoard // [( cellClick, Just curPlayer)] }
                 else game
     |  otherwise = game
 
 cells2num :: Cell -> Int
 cells2num cell
-  | cell == Empty = 0
-  | cell == Full PlayerX =  1
-  | cell == Full PlayerO = -1
+  | cell == Nothing = 0
+  | cell == Just PlayerX =  1
+  | cell == Just PlayerO = -1
 
-allDirections :: [[(Int,Int)]]
-allDirections = concat [hor, ver, dia]
-    where hor = [ [(x,y) | x <- [0..n-1]] | y <- [0..n-1] ]
-          ver = [ [(x,y) | y <- [0..n-1]] | x <- [0..n-1] ]
-          dia = [ [(i,i) | i <- [0..n-1]], [(j,(n-1)-j) | j <- [0..n-1]] ]
+allDirections :: Board -> [[Int]]
+allDirections board = hor ++ ver ++ dia
+    where hor = [ [cells2num $ board ! (x,y) | x <- [0..n-1]] | y <- [0..n-1] ]
+          ver = [ [cells2num $ board ! (x,y) | y <- [0..n-1]] | x <- [0..n-1] ]
+          dia = [ [cells2num $ board ! (i,i) | i <- [0..n-1]]
+                , [cells2num $ board ! (j,(n-1)-j) | j <- [0..n-1]] ]
 
 checkWinner :: Game -> Game
 checkWinner game =
     let board = gameBoard game
-        boardP = map (map (cells2num . (!) board)) allDirections
-        boardP'= map sum boardP
-    in  if   any (\x -> x == 3 || x == -3) boardP'
+        boardNums =  allDirections board
+    in  if   any (\x -> x == 3 || x == -3) $ map sum boardNums
         then game { gameState = GameOver (Just $ changePlayer $ gamePlayer game) }
-        else if   all (\x -> x /= 0) $concat boardP
+        else if   all (\x -> x /= 0) $ concat boardNums
              then game { gameState = GameOver Nothing }
              else game
 
