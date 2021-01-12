@@ -16,11 +16,14 @@ build-type:          Simple
 extra-source-files:  CHANGELOG.md
 
 executable OsXs
-  main-is:             Main.hs
-  other-modules:        Game, Rendering, Logic
+  main-is:              Main.hs
+  other-modules:        Game
+                      , Rendering
+                      , Logic
   -- other-extensions:
-  build-depends:       base >=4.14 && <4.15,
-                        array, gloss
+  build-depends:        base >=4.14
+                      , array
+                      , gloss
   ghc-options:         -O2 -threaded
-  -- hs-source-dirs:
+  hs-source-dirs:      src
   default-language:    Haskell2010
